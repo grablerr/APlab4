@@ -45,3 +45,10 @@ numeric_info2 = df[['Количество слов']].describe()
 print(numeric_info2)
 
 df.to_csv('data.csv', index=False)
+
+def filter_by_word_count(dataframe, word_count):
+    return dataframe[dataframe['Количество слов'] <= word_count]
+
+filtered_df = filter_by_word_count(df,20)
+print(filtered_df)
+filtered_df.to_csv('data_of_filtered.csv', index=False)
