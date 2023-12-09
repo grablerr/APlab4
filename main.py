@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-    
+
 def read_review(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = file.readlines()
@@ -21,8 +21,11 @@ for folder in os.listdir(root_folder):
             file_path = os.path.join(folder_path, file_name)
             if os.path.isfile(file_path):
                 review_text = read_review(file_path)
-                data.append({'Количество звёзд': folder, 'Рецензия': review_text})
+                data.append({'Количество звёзд': folder, 'Текст рецензии': review_text})
 
 df = pd.DataFrame(data)
+
+df.fillna('ПУСТОЙ ОТЗЫВ', inplace=True)
+
 print(df)
 df.to_csv('data.csv', index=False)
