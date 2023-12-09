@@ -17,6 +17,19 @@ def read_review(file_path):
         else:
             return None
 
+def filter_by_word_count(dataframe, word_count):
+    return dataframe[dataframe['Количество слов'] <= word_count]
+
+def filter_by_stars(dataframe, label):
+    dataframe['Количество звёзд'] = dataframe['Количество звёзд'].astype(str)
+    if label in ['1', '2', '3', '4', '5']:
+        filtered_df = dataframe[dataframe['Количество звёзд'] == label]
+    elif label == "other":
+        filtered_df = dataframe[~dataframe['Количество звёзд'].isin(['1', '2', '3', '4', '5'])]
+    else:
+        raise ValueError("Неверное значение для метки класса. Допустимые значения: от 1 до 5 и 'other'")
+    return filtered_df
+
 root_folder = 'dataset'
 
 data = []
@@ -46,9 +59,10 @@ print(numeric_info2)
 
 df.to_csv('data.csv', index=False)
 
-def filter_by_word_count(dataframe, word_count):
-    return dataframe[dataframe['Количество слов'] <= word_count]
-
 filtered_df = filter_by_word_count(df,20)
 print(filtered_df)
-filtered_df.to_csv('data_of_filtered.csv', index=False)
+filtered_df.to_csv('data_of_filtered_df_by_words.csv', index=False)
+
+filterd_df_by_stars = filter_by_stars(df, "1")
+print(filterd_df_by_stars)
+filterd_df_by_stars.to_csv('data_filterd_df_by_stars.csv', index=False)
