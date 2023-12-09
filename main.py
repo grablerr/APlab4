@@ -66,3 +66,6 @@ filtered_df.to_csv('data_of_filtered_df_by_words.csv', index=False)
 filterd_df_by_stars = filter_by_stars(df, "1")
 print(filterd_df_by_stars)
 filterd_df_by_stars.to_csv('data_filterd_df_by_stars.csv', index=False)
+
+grouped = df.groupby('Количество звёзд')['Количество слов'].agg(['max', 'min', 'mean'])
+print(grouped)
