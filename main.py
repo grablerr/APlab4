@@ -37,4 +37,11 @@ df.fillna('ПУСТОЙ ОТЗЫВ', inplace=True)
 df['Количество слов'] = df['Текст рецензии'].apply(count_words)
 
 print(df.head())
+
+numeric_info1 = df[['Количество звёзд']].describe()
+print(numeric_info1)
+
+numeric_info2 = df[['Количество слов']].describe()
+print(numeric_info2)
+
 df.to_csv('data.csv', index=False)
