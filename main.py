@@ -1,7 +1,11 @@
 import pandas as pd
 import os
 import nltk
+import matplotlib.pyplot as plt
 import re
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from collections import Counter
 
 def count_words(text):
     words = nltk.word_tokenize(text)
@@ -30,6 +34,31 @@ def filter_by_stars(dataframe, label):
         raise ValueError("Неверное значение для метки класса. Допустимые значения: от 1 до 5 и 'other'")
     return filtered_df
 
+def plot_word_histogram(dataframe, label):
+    dataframe['Количество звёзд'] = dataframe['Количество звёзд'].astype(str)
+    if label == "other":
+        text_block = " ".join(dataframe[~dataframe['Количество звёзд'].isin(['1', '2', '3', '4', '5'])]['Текст рецензии'])
+    else:
+        text_block = " ".join(dataframe[dataframe['Количество звёзд'] == label]['Текст рецензии'])
+
+    tokens = word_tokenize(text_block)
+
+    lemmatizer = WordNetLemmatizer()
+    lemmatized_tokens = [lemmatizer.lemmatize(token.lower()) for token in tokens if token.isalnum()]
+
+    word_freq = Counter(lemmatized_tokens)
+
+    sorted_word_freq = dict(sorted(word_freq.items(), key=lambda item: item[1], reverse=True))
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(sorted_word_freq.keys(), sorted_word_freq.values())
+    plt.xlabel('Слова')
+    plt.ylabel('Частота встречаемости')
+    plt.title('Гистограмма слов для метки класса ' + str(label))
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.show()
+    
 root_folder = 'dataset'
 
 data = []
@@ -69,3 +98,5 @@ filterd_df_by_stars.to_csv('data_filterd_df_by_stars.csv', index=False)
 
 grouped = df.groupby('Количество звёзд')['Количество слов'].agg(['max', 'min', 'mean'])
 print(grouped)
+
+plot_word_histogram(df, '1')
